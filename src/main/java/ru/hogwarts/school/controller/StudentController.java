@@ -22,7 +22,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity findStudentByAgeBetween(@RequestBody(required = false)  Integer min, @RequestBody(required = false)  Integer max) {
+    public ResponseEntity findStudentByAgeBetween(@RequestBody Integer min, @RequestBody Integer max) {
         return ResponseEntity.ok(studentService.findByAgeBetween(min, max));
     }
 
