@@ -23,7 +23,7 @@ public class FacultyController {
     }
 
     @GetMapping
-    public ResponseEntity getFacultyByNameOrColor(@RequestBody String name, @RequestBody String color) {
+    public ResponseEntity getFacultyByNameOrColor(@RequestBody(required = false) String name, @RequestBody(required = false)  String color) {
         if (facultyService.findFacultyByNameOrColor(name, color) == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
