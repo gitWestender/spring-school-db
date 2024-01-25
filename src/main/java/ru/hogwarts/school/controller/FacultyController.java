@@ -24,10 +24,13 @@ public class FacultyController {
 
     @GetMapping
     public ResponseEntity getFacultyByNameOrColor(@RequestBody(required = false) String name, @RequestBody(required = false)  String color) {
-        if (facultyService.findFacultyByNameOrColor(name, color) == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultyByName(name));
         }
-        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(name, color));
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultyByName(color));
+        }
+        return ResponseEntity.ok(facultyService.getAllFaculty());
     }
 
     @PostMapping

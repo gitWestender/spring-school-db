@@ -22,10 +22,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity findStudentByAgeBetween(@RequestBody(required = false)  int min, @RequestBody(required = false)  int max) {
-        if (studentService.findByAgeBetween(min, max).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
+    public ResponseEntity findStudentByAgeBetween(@RequestBody(required = false)  Integer min, @RequestBody(required = false)  Integer max) {
         return ResponseEntity.ok(studentService.findByAgeBetween(min, max));
     }
 

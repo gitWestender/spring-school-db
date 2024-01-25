@@ -31,7 +31,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> findByAgeBetween(int min, int max) {
+    public Collection<Student> findByAgeBetween(Integer min, Integer max) {
         return studentRepository.findStudentByAgeBetween(min, max);
     }
 }
