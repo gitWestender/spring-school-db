@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
@@ -18,6 +19,14 @@ public class StudentController {
     @GetMapping("{id}")
     public ResponseEntity getStudentInfo(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.findStudent(id));
+    }
+
+    @GetMapping
+    public ResponseEntity findStudentByAgeBetween(@RequestBody int min, @RequestBody int max) {
+        if (studentService.findByAgeBetween(min, max).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(studentService.findByAgeBetween(min, max));
     }
 
     @PostMapping
