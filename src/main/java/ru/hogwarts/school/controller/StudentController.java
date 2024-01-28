@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/student")
 public class StudentController {
@@ -18,6 +20,16 @@ public class StudentController {
     @GetMapping("{id}")
     public ResponseEntity getStudentInfo(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.findStudent(id));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity getAllStudentsInfo() {
+        return ResponseEntity.ok(studentService.getAllStudent());
+    }
+
+    @GetMapping
+    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min, @RequestParam Integer max) {
+        return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
     }
 
     @PostMapping
