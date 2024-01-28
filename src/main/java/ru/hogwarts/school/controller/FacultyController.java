@@ -21,6 +21,18 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.findFaclty(id));
     }
 
+    @GetMapping
+    public ResponseEntity<Faculty> findFacultyByNameOrColor(@RequestParam(required = false) String name,
+                                                            @RequestParam(required = false) String color) {
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultyByName(name));
+        }
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultyByColor(color));
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping
     public Faculty createFaculty(@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
