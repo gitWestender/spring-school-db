@@ -28,8 +28,15 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min, @RequestParam Integer max) {
-        return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
+    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min,
+                                                                       @RequestParam Integer max) {
+        if (min != null && max != null && min > max) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (min != null && max != null && min <= max) {
+            return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
