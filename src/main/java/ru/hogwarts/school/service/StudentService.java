@@ -15,13 +15,12 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-
     public Student createStudent(Student student) {
         return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public Student editStudent(Student student) {

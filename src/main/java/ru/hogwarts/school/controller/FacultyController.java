@@ -12,15 +12,19 @@ import java.util.Collection;
 @RequestMapping("/faculty")
 public class FacultyController {
 
-    private FacultyService facultyService;
+    private final FacultyService facultyService;
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getFacultyInfo(@PathVariable Long id) {
-        return ResponseEntity.ok(facultyService.findFaclty(id));
+    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
+        Faculty tmp = facultyService.findFaclty(id);
+        if (tmp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tmp);
     }
 
     @GetMapping
@@ -36,7 +40,7 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<Collection<Student>> getAllStudentsByFaculty(@RequestParam Long id) {
+    public ResponseEntity<Collection<Student>> getAllStudentsByFaculty(@PathVariable Long id) {
         return ResponseEntity.ok(facultyService.getStudentsByFaculty(id));
     }
 
