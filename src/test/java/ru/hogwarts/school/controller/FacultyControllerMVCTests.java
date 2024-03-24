@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.internal.build.AllowPrintStacktrace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.*;
 
 @WebMvcTest(FacultyController.class)
 public class FacultyControllerMVCTests {
@@ -58,7 +61,7 @@ public class FacultyControllerMVCTests {
         objectMapper = new ObjectMapper();
     }
 
-    public ResultMatcher rmFaculty(String prefix, Faculty faculty) {
+    private ResultMatcher rmFaculty(String prefix, Faculty faculty) {
         return ResultMatcher.matchAll(
                 jsonPath(prefix + ".id").value(faculty.getId()),
                 jsonPath(prefix + ".name").value(faculty.getName()),
@@ -66,7 +69,7 @@ public class FacultyControllerMVCTests {
         );
     }
 
-    public MockHttpServletRequestBuilder postJson(String uri, Object body) {
+    private MockHttpServletRequestBuilder postJson(String uri, Object body) {
         try {
             String json = new ObjectMapper().writeValueAsString(body);
             return post(uri)
@@ -80,14 +83,14 @@ public class FacultyControllerMVCTests {
 
     @Test
     void getFacultyByIdTest() throws Exception {
-
-        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(testFaculty));
+        final Long ID = 1L;
+        when(facultyRepository.findById(ID)).thenReturn(Optional.of(testFaculty));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/{id}", 1)
+                        .get("/faculty/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(rmFaculty("$", testFaculty));
     }
 
@@ -95,11 +98,12 @@ public class FacultyControllerMVCTests {
     void postFacultyTest() throws Exception {
 
         when(facultyRepository.save(any())).thenReturn(testFaculty);
-        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(testFaculty));
 
         mockMvc.perform(postJson("/faculty", testFaculty))
-                .andExpect(status().isOk())
-                .andExpect(rmFaculty("$", testFaculty));
+                .andExpect(status().isCreated())
+                .andExpect(rmFaculty("$", testFaculty))
+                .andDo(print());
+
     }
 
     @Test
@@ -152,10 +156,10 @@ public class FacultyControllerMVCTests {
         when(facultyRepository.save(any())).thenReturn(testFaculty);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/faculty")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(testFaculty)))
+                        .put("/faculty")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(testFaculty)))
                 .andExpect(status().isOk());
         verify(facultyRepository, times(1)).save(any());
     }
@@ -164,12 +168,14 @@ public class FacultyControllerMVCTests {
     @DisplayName(value = "ShouldReturn_OK_WhenDeleteFoundFacultyByID")
     void deleteFacultyBuIdTest() throws Exception {
 
-        willDoNothing().given(facultyService).deleteFaculty(1L);
+        doNothing().when(facultyRepository).deleteById(1L);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/faculty/{id}", 1L))
+                        .delete("/faculty/{id}", 1L))
                 .andExpect(status().isOk())
                 .andDo(print());
+        verify(facultyRepository, times(1)).deleteById(1L);
+        assertThat(facultyRepository.findById(1L)).isEmpty();
     }
 
 }
