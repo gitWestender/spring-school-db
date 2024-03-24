@@ -82,6 +82,7 @@ public class FacultyControllerMVCTests {
     }
 
     @Test
+    @DisplayName(value = "GET_StatusIsOK_WhenGetFacultyByID")
     void getFacultyByIdTest() throws Exception {
         final Long ID = 1L;
         when(facultyRepository.findById(ID)).thenReturn(Optional.of(testFaculty));
@@ -92,6 +93,20 @@ public class FacultyControllerMVCTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(rmFaculty("$", testFaculty));
+    }
+
+    @Test
+    @DisplayName(value = "GET_StatusIs4xx_WhenNotFoundFacultyByID")
+    void getFacultyById404Test() throws Exception {
+        final Long ID = 1L;
+        when(facultyRepository.findById(ID)).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/{id}", ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
     }
 
     @Test
