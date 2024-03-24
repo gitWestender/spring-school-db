@@ -21,6 +21,11 @@ public class Student {
     @JsonIgnore
     private Faculty faculty;
 
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+    
+
     public Student() {
     }
 
