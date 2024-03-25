@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Student {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "students_seq")
     private Long id;
 
     private String name;
