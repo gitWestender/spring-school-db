@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -21,6 +22,7 @@ import java.util.NoSuchElementException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -142,6 +144,22 @@ public class StudentControllerITests {
         List<Student> students = response.getBody();
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(students, hasSize(4));
+    }
+
+    @Test
+    @DisplayName(value = "GET_StatusIs200_WhenFindFacultyByStudentID")
+    void getOkWhenGetFacultyByStudentIdTest() {
+        long id = 1L;
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/student/{id}/faculty", Faculty.class, id);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    @DisplayName(value = "GET_StatusIs404_WhenNotFoundFacultyByStudentID")
+    void getNotFoundWhenGetFacultyByStudentIdTest() {
+        long id = 10L;
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/student/{id}/faculty", Faculty.class, id);
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
 }
