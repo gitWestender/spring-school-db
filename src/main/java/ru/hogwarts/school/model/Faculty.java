@@ -9,7 +9,7 @@ import java.util.Collection;
 public class Faculty {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "faculties_seq")
     private Long id;
 
     private String name;
