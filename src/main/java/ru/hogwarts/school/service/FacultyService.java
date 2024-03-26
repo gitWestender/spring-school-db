@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Service
@@ -49,8 +50,8 @@ public class FacultyService {
         return facultyRepository.findFacultyByColorIgnoreCase(color);
     }
 
-    public Collection<Student> getStudentsByFaculty(Long id) {
-        return facultyRepository.getReferenceById(id).getStudents();
+    public List<Student> getStudentsByFaculty(Long id) {
+        return facultyRepository.findStudentsByFacultyId(id);
     }
 
 }
