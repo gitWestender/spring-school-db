@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -7,20 +8,22 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
 
-    private FacultyService facultyService;
+    private final FacultyService facultyService;
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getFacultyInfo(@PathVariable Long id) {
-        return ResponseEntity.ok(facultyService.findFaclty(id));
+    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
+
+        return ResponseEntity.ok().body(facultyService.findFaclty(id));
     }
 
     @GetMapping
@@ -36,13 +39,13 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<Collection<Student>> getAllStudentsByFaculty(@RequestParam Long id) {
+    public ResponseEntity<List<Student>> getAllStudentsByFaculty(@PathVariable Long id) {
         return ResponseEntity.ok(facultyService.getStudentsByFaculty(id));
     }
 
     @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
     }
 
     @PutMapping
