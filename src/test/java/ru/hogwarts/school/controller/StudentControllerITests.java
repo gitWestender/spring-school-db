@@ -58,7 +58,10 @@ public class StudentControllerITests {
     @DisplayName(value = "GET_StatusIs200_WhenGetStudentByID")
     void getStudentByIdTest() {
         long id = createTestStudent("TestName1").getId();
-        Student tmp = restTemplate.getForObject("/student/{id}", Student.class, id);
+        Student tmp = restTemplate.getForObject(
+                "/student/{id}",
+                Student.class,
+                id);
 
         assertThat(tmp.getName(), is("TestName1"));
 
@@ -70,7 +73,10 @@ public class StudentControllerITests {
     void createStudentTest() {
         Student tmp = createTestStudent("CreateTest");
 
-        ResponseEntity<Student> response = restTemplate.postForEntity("/student", tmp, Student.class);
+        ResponseEntity<Student> response = restTemplate.postForEntity(
+                "/student",
+                tmp,
+                Student.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(response.getBody().getId(), notNullValue());
@@ -85,13 +91,17 @@ public class StudentControllerITests {
         Student tmp = createTestStudent("UpdateTest");
         HttpEntity<Student> entity = new HttpEntity<>(tmp);
 
-        ResponseEntity<Student> response = restTemplate.exchange("/student", HttpMethod.PUT, entity, Student.class);
+        ResponseEntity<Student> response = restTemplate.exchange(
+                "/student",
+                HttpMethod.PUT,
+                entity,
+                Student.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody().getId(), notNullValue());
         assertThat(response.getBody().getName(), is("UpdateTest"));
-        cleanUP();
 
+        cleanUP();
     }
 
     @Test
@@ -99,8 +109,12 @@ public class StudentControllerITests {
     void deleteStudentTest() {
         long id = createTestStudent("DeleteTest").getId();
 
-        ResponseEntity<Student> response = restTemplate
-                .exchange("/student/{id}", HttpMethod.DELETE, null, Student.class, id);
+        ResponseEntity<Student> response = restTemplate.exchange(
+                "/student/{id}",
+                HttpMethod.DELETE,
+                null,
+                Student.class,
+                id);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
@@ -132,16 +146,19 @@ public class StudentControllerITests {
         ResponseEntity<Collection<Student>> response = restTemplate.getForEntity(uri, null);
 
         assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-
     }
 
     @Test
     @DisplayName(value = "GET_StatusIs200_WhenGetAllStudents")
     void getAllStudentsTest() {
-        ResponseEntity<List<Student>> response = restTemplate.exchange("/student/all", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Student>>() {
-                });
+        ResponseEntity<List<Student>> response = restTemplate.exchange(
+                "/student/all",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Student>>() {});
+
         List<Student> students = response.getBody();
+
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(students, hasSize(4));
     }
