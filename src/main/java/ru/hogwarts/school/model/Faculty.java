@@ -10,7 +10,7 @@ import java.util.List;
 public class Faculty {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "faculties_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
