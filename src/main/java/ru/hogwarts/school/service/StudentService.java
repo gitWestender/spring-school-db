@@ -3,11 +3,15 @@ package ru.hogwarts.school.service;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exceptions.FacultyNotFoundException;
+import ru.hogwarts.school.exceptions.StudentNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
 
 @Service
 public class StudentService {
@@ -15,13 +19,18 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-
     public Student createStudent(Student student) {
         return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {
-        return studentRepository.findById(id).get();
+        Supplier<StudentNotFoundException> sup = new Supplier<StudentNotFoundException>() {
+            @Override
+            public StudentNotFoundException get() {
+                return null;
+            }
+        };
+        return studentRepository.findById(id).orElseThrow(()-> new StudentNotFoundException(""));
     }
 
     public Student editStudent(Student student) {
@@ -32,7 +41,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> getAllStudent() {
+    public List<Student> getAllStudent() {
         return studentRepository.findAll();
     }
 
@@ -40,7 +49,7 @@ public class StudentService {
         return studentRepository.findStudentsByAgeBetween(min, max);
     }
 
-    public Faculty getFacultyByStudent(Long id) {
+    public Faculty getFacultyByStudent(Long id){
         return studentRepository.getReferenceById(id).getFaculty();
     }
 }

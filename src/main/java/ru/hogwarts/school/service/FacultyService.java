@@ -1,27 +1,38 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exceptions.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
 @Service
 public class FacultyService {
 
-    @Autowired
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Faculty createFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
-    public Object findFaclty(Long id) {
-        return facultyRepository.findById(id);
+    public Faculty findFaclty(Long id) {
+        Supplier<FacultyNotFoundException> sup = new Supplier<>() {
+            @Override
+            public FacultyNotFoundException get() {
+                return new FacultyNotFoundException("");
+            }
+        };
+//        Supplier<FacultyNotFoundException> sup = () -> new FacultyNotFoundException("");
+        return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(""));
     }
 
     public Faculty editFaculty(Faculty faculty) {
@@ -40,8 +51,10 @@ public class FacultyService {
         return facultyRepository.findFacultyByColorIgnoreCase(color);
     }
 
-    public Collection<Student> getStudentsByFaculty(Long id) {
-        return facultyRepository.getReferenceById(id).getStudents();
+    public List<Student> getStudentsByFaculty(Long id) {
+        return facultyRepository.findById(id)
+                .map(Faculty::getStudents)
+                .orElse(Collections.emptyList());
     }
 
 }

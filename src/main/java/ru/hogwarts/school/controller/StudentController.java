@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -20,43 +21,40 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public ResponseEntity getStudentInfo(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.findStudent(id));
+        return ResponseEntity.ok().body(studentService.findStudent(id));
     }
 
     @GetMapping("/{id}/faculty")
-    public ResponseEntity<Faculty> getFacultyByStudent(@RequestParam Long id) {
+    public ResponseEntity<Faculty> getFacultyByStudent(@PathVariable Long id) {
         Student tmpStudent = studentService.findStudent(id);
         if (tmpStudent == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.getFacultyByStudent(id));
+        return ResponseEntity.ok().body(studentService.getFacultyByStudent(id));
     }
 
     @GetMapping("/all")
     public ResponseEntity getAllStudentsInfo() {
-        return ResponseEntity.ok(studentService.getAllStudent());
+        return ResponseEntity.ok().body(studentService.getAllStudent());
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min,
-                                                                       @RequestParam Integer max) {
+    public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam(required = true) Integer min,
+                                                                       @RequestParam(required = true) Integer max) {
         if (min != null && max != null && min > max) {
             return ResponseEntity.badRequest().build();
         }
-        if (min != null && max != null && min <= max) {
-            return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
-        }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
     }
 
     @PutMapping
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.editStudent(student));
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.editStudent(student));
     }
 
     @DeleteMapping("/{id}")

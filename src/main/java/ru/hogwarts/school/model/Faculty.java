@@ -3,20 +3,21 @@ package ru.hogwarts.school.model;
 import jakarta.persistence.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table (name = "faculties")
 public class Faculty {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private String color;
 
     @OneToMany(mappedBy = "faculty")
-    private Collection<Student> students;
+    private List<Student> students;
 
     public Faculty() {
     }
@@ -27,8 +28,12 @@ public class Faculty {
         this.color = color;
     }
 
-    public Collection<Student> getStudents() {
+    public List<Student> getStudents() {
         return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     public long getId() {

@@ -3,10 +3,10 @@ package ru.hogwarts.school.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table (name = "avatars")
+@Table(name = "avatars")
 public class Avatar {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String filePath;
