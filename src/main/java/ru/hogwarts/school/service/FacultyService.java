@@ -54,7 +54,7 @@ public class FacultyService {
     public List<Student> getStudentsByFaculty(Long id) {
         return facultyRepository.findById(id)
                 .map(Faculty::getStudents)
-                .orElseThrow();
+                .orElse(Collections.emptyList());
     }
 
 }
