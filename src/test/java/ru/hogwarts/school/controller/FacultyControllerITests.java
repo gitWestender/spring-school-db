@@ -128,12 +128,11 @@ public class FacultyControllerITests {
         long id = 1L;
 
         ResponseEntity<List<Student>> response = restTemplate
-                .exchange("/faculty/{id}",
+                .exchange("/faculty/" + id + "/students",
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<List<Student>>() {
-                        },
-                        id);
+                        });
 
         List<Student> list = response.getBody();
 

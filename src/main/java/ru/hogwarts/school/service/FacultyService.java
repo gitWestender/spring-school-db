@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -51,7 +52,9 @@ public class FacultyService {
     }
 
     public List<Student> getStudentsByFaculty(Long id) {
-        return facultyRepository.findStudentsByFacultyId(id);
+        return facultyRepository.findById(id)
+                .map(Faculty::getStudents)
+                .orElseThrow();
     }
 
 }
