@@ -12,7 +12,7 @@ public class InfoController {
     private String port;
 
     @GetMapping("/port")
-    public ResponseEntity<String> getPort() {
+    public ResponseEntity<String> getPortByDefaultProfile() {
         return ResponseEntity.ok(port);
     }
 
