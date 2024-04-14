@@ -18,12 +18,13 @@ import java.util.function.Supplier;
 @Service
 public class StudentService {
 
-    Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     @Autowired
     private StudentRepository studentRepository;
 
     public Student createStudent(Student student) {
+        logger.info("Was invoked method for PUT student");
         return studentRepository.save(student);
     }
 
