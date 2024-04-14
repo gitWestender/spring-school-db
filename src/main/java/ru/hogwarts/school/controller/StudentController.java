@@ -73,4 +73,14 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/math/default")
+    public ResponseEntity<Integer> getDefaultSum() {
+        return ResponseEntity.ok().body(studentService.defaultSum());
+    }
+
+    @GetMapping("/math/parallel")
+    public ResponseEntity<Integer> getParallelSum() {
+        return ResponseEntity.ok().body(studentService.parallelSum());
+    }
 }

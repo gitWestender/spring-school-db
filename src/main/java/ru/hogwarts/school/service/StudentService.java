@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exceptions.FacultyNotFoundException;
@@ -14,6 +16,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -22,6 +26,8 @@ public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public Student createStudent(Student student) {
         return studentRepository.save(student);
@@ -83,5 +89,31 @@ public class StudentService {
 
     public List<Student> getLastFiveStudents(Integer count) {
         return studentRepository.getLastStudents(count);
+    }
+
+
+    public int defaultSum() {
+
+        Long time = System.currentTimeMillis();
+
+        int sum = Stream
+                .iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b);
+        logger.info("Time spend (for Default Sum): " + (System.currentTimeMillis() - time) + " ms");
+        return sum;
+    }
+
+    public int parallelSum() {
+
+        Long time = System.currentTimeMillis();
+
+        int sum = IntStream
+                .iterate(1, a -> a + 1)
+                .parallel()
+                .limit(1_000_000)
+                .sum();
+        logger.info("Time spend (for Parallel Sum): " + (System.currentTimeMillis() - time) + " ms");
+        return sum;
     }
 }
