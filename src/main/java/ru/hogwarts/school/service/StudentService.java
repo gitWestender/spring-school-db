@@ -13,6 +13,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 @Service
@@ -77,5 +78,40 @@ public class StudentService {
     public List<Student> getLastFiveStudents(Integer count) {
         logger.info("Was invoked method to GET_LAST_STUDENTS");
         return studentRepository.getLastStudents(count);
+    }
+
+    public void printName(int id) {
+        System.out.println(studentRepository.findAll().get(id).getName());
+    }
+
+    public void printNamesInParallelThreads() {
+        printName(0);
+        printName(1);
+        new Thread(() -> {
+            printName(2);
+            printName(3);
+        }).start();
+        new Thread(()->{
+            printName(4);
+            printName(5);
+        }).start();
+
+    }
+
+    public synchronized void printNameSync(int id) {
+        System.out.println(studentRepository.findAll().get(id).getName());
+    }
+
+    public void printNamesInSyncTreads() {
+        printNameSync(1);
+        printNameSync(2);
+        new Thread(() -> {
+            printNameSync(2);
+            printNameSync(3);
+        }).start();
+        new Thread(()->{
+            printNameSync(4);
+            printNameSync(5);
+        }).start();
     }
 }

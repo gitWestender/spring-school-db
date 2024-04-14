@@ -47,6 +47,16 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
     }
 
+    @GetMapping("/print-parallel")
+    public void printNamesInParallelThreads() {
+        studentService.printNamesInParallelThreads();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printNamesInSyncThreads() {
+        studentService.printNamesInSyncTreads();
+    }
+
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
