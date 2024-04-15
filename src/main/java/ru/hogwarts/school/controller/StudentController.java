@@ -8,6 +8,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -38,6 +39,16 @@ public class StudentController {
         return ResponseEntity.ok().body(studentService.getAllStudent());
     }
 
+    @GetMapping("/stream/name/{letter}")
+    public ResponseEntity<List<Student>> getAllStudentsByFirstLetter(@PathVariable String letter) {
+        return ResponseEntity.ok().body(studentService.getAllStudentsByFirstLetter(letter));
+    }
+
+    @GetMapping("/stream/avg-age/")
+    public ResponseEntity<Double> getAverageAgeOfAllStudents() {
+        return ResponseEntity.ok().body(studentService.getAverageAgeOfAllStudents());
+    }
+
     @GetMapping
     public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam(required = true) Integer min,
                                                                        @RequestParam(required = true) Integer max) {
@@ -61,5 +72,15 @@ public class StudentController {
     public ResponseEntity deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/math/default")
+    public ResponseEntity<Integer> getDefaultSum() {
+        return ResponseEntity.ok().body(studentService.defaultSum());
+    }
+
+    @GetMapping("/math/parallel")
+    public ResponseEntity<Integer> getParallelSum() {
+        return ResponseEntity.ok().body(studentService.parallelSum());
     }
 }

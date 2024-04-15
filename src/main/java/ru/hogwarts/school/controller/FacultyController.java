@@ -43,6 +43,11 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getStudentsByFaculty(id));
     }
 
+    @GetMapping("/stream/longest-name")
+    public ResponseEntity<String> getLongestFacultyName() {
+        return ResponseEntity.ok().body(facultyService.getLongestFacultyName());
+    }
+
     @PostMapping
     public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
         return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
