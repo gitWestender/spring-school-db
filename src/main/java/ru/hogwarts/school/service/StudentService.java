@@ -12,8 +12,8 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,8 +28,6 @@ public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
-
-    Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     public Student createStudent(Student student) {
         logger.info("Was invoked method for PUT student");
@@ -62,22 +60,6 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public List<Student> getAllStudentsByFirstLetter(String letter) {
-        return studentRepository.findAll()
-                .stream()
-                .filter(student -> startsWithIgnoreCase(student.getName(), letter))
-                .sorted(Comparator.comparing(Student::getName))
-                .collect(Collectors.toList());
-    }
-
-    public Double getAverageAgeOfAllStudents() {
-        return studentRepository.findAll()
-                .stream()
-                .mapToDouble(Student::getAge)
-                .average()
-                .orElse(0);
-    }
-
     public Collection<Student> getStudentsByAgeBetween(Integer min, Integer max) {
         logger.info("Was invoked method to GET_ALL_BETWEEN_AGE");
         return studentRepository.findStudentsByAgeBetween(min, max);
@@ -103,6 +85,40 @@ public class StudentService {
         return studentRepository.getLastStudents(count);
     }
 
+    public void printName(int id) {
+        System.out.println(studentRepository.findAll().get(id).getName());
+    }
+
+    public void printNamesInParallelThreads() {
+        printName(0);
+        printName(1);
+        new Thread(() -> {
+            printName(2);
+            printName(3);
+        }).start();
+        new Thread(()->{
+            printName(4);
+            printName(5);
+        }).start();
+
+    }
+
+    public synchronized void printNameSync(int id) {
+        System.out.println(studentRepository.findAll().get(id).getName());
+    }
+
+    public void printNamesInSyncTreads() {
+        printNameSync(1);
+        printNameSync(2);
+        new Thread(() -> {
+            printNameSync(2);
+            printNameSync(3);
+        }).start();
+        new Thread(()->{
+            printNameSync(4);
+            printNameSync(5);
+        }).start();
+    }
 
     public int defaultSum() {
 
