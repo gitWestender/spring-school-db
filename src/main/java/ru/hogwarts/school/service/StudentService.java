@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService {
@@ -113,5 +115,30 @@ public class StudentService {
             printNameSync(4);
             printNameSync(5);
         }).start();
+    }
+
+    public int defaultSum() {
+
+        Long time = System.currentTimeMillis();
+
+        int sum = Stream
+                .iterate(1, a -> a + 1)
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b);
+        logger.info("Time spend (for Default Sum): " + (System.currentTimeMillis() - time) + " ms");
+        return sum;
+    }
+
+    public int parallelSum() {
+
+        Long time = System.currentTimeMillis();
+
+        int sum = IntStream
+                .iterate(1, a -> a + 1)
+                .parallel()
+                .limit(1_000_000)
+                .sum();
+        logger.info("Time spend (for Parallel Sum): " + (System.currentTimeMillis() - time) + " ms");
+        return sum;
     }
 }
